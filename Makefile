@@ -16,4 +16,4 @@ all: ${OBJS}
 	${CC} -c $<
 
 clean:
-	rm *.o ${OBJS}
+	rm ${OBJS}
