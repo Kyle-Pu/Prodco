@@ -1,19 +1,13 @@
-.PHONY = all clean
-
 CC = gcc # compiler
-#FLAGS = -lrt -pthread -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
+FLAGS = -lrt -pthread -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now
 
 SRCS := $(wildcard *.c) # Get all C source files
-OBJS := $(SRCS:%.c=%)   # Get C source file names without extension
+OBJS := $(SRCS:%.c=%.o)   # Get C source file names without extension
 
-all: ${OBJS}
+.PHONY = ProducerConsumer clean
 
-%: %.o
-	@echo "Checking..."
-
-%.o: %.c
-	@echo "Creating objects"
-	${CC} -c $<
+ProducerConsumer: $(OBJS)
+	${CC} ${FLAGS} $^ -o $@
 
 clean:
-	rm ${OBJS}
+	rm ${OBJS} ProducerConsumer
