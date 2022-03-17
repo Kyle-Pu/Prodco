@@ -44,14 +44,14 @@ void* consume(void *args){
 
   // Critical section
   pthread_mutex_lock(&buffArgs->mutex);
-  int val = buffArgs->buffer[buffArgs->currPos];
+  int val = buffArgs->buffer[buffArgs->currPos-1];
   buffArgs->currPos--;
   pthread_mutex_unlock(&buffArgs->mutex);
 
   // Wake any waiting producers
   sem_post(&buffArgs->num_open);
   
-  printf("Read value is %d", val);
+  printf("Read value is %d\n", val);
   return NULL;
 }
 
