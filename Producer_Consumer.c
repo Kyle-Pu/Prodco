@@ -73,7 +73,7 @@ int main(int argc, char **argv){
   args->buffer = buff;
   args->currPos = 0;
   args->maxSize = buffSize;
-  sem_init(&args->num_open, 0, buffSize); // Buffer begins completely empty
+  sem_init(&args->num_open, 0, buffSize); // Buffer begins completely empty // TODO: sem_t is deprecated on OS X. Test on a Linux platform and write a working version for OS X
   sem_init(&args->num_filled, 0, 0); // Buffer begins with no items to consume
   
   // Create threads
