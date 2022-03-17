@@ -15,3 +15,8 @@ Clone this repository and run `make` in the repo's directory.
 
 1) [Learn about Makefiles](https://opensource.com/article/18/8/what-how-makefile#:~:text=The%20make%20utility%20requires%20a,be%20installed%20using%20make%20install%20.)
 2) [Mutex Lock Examples](https://docs.oracle.com/cd/E19455-01/806-5257/sync-12/index.html)
+
+## C Syntax Aside
+
+- `->` has higher precedence than `&`
+
