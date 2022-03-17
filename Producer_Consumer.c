@@ -16,7 +16,16 @@ struct params{
   sem_t num_open;
   sem_t num_filled;
 };
-  
+
+void printBuff(struct params *buffArgs){
+  printf("Buffer now: [");
+  for(int k = 0; k < buffArgs->maxSize - 1; k++){
+    printf("%d, ", buffArgs->buffer[k]);
+  }
+  printf("%d]", buffArgs->buffer[buffArgs->maxSize-1]); // Print last element
+  printf("\n");  
+}
+
 void* produce(void *args){
   struct params *buffArgs = (struct params *) args; // Cast args into pointer type
 
@@ -26,10 +35,16 @@ void* produce(void *args){
 
   // Enter critical section once appropriate
   pthread_mutex_lock(&buffArgs->mutex);
-  buffArgs->buffer[buffArgs->currPos] = 22; // https://www.youtube.com/watch?v=AgFeZr5ptV8
+  int writeVal = 22; // https://www.youtube.com/watch?v=AgFeZr5ptV8
+  buffArgs->buffer[buffArgs->currPos] = writeVal;
   buffArgs->currPos++;
-  pthread_mutex_unlock(&buffArgs->mutex); // Leave critical section
 
+  printf("Wrote value %d at slot %d. ", writeVal, buffArgs->currPos-1);
+  printBuff(buffArgs);
+  
+  pthread_mutex_unlock(&buffArgs->mutex); // Leave critical section
+  // END of critical section
+  
   // Wake any waiting consumers
   sem_post(&buffArgs->num_filled);
 
@@ -42,24 +57,29 @@ void* consume(void *args){
   // Wait until there are items to consume
   sem_wait(&buffArgs->num_filled);
 
-  // Critical section
+  // BEGIN of critical section
   pthread_mutex_lock(&buffArgs->mutex);
   int val = buffArgs->buffer[buffArgs->currPos-1];
+  buffArgs->buffer[buffArgs->currPos-1] = 0; // Reset value at slot in buffer
   buffArgs->currPos--;
-  pthread_mutex_unlock(&buffArgs->mutex);
 
+  printf("Read value is %d. ", val);
+  printBuff(buffArgs);
+  
+  pthread_mutex_unlock(&buffArgs->mutex);
+  // END of critical section
+  
   // Wake any waiting producers
   sem_post(&buffArgs->num_open);
   
-  printf("Read value is %d\n", val);
   return NULL;
 }
 
 int main(int argc, char **argv){
   // Check inputs
-  if(argc != 2 || atoi(argv[1]) <= 0){
+  if(argc != 3 || atoi(argv[1]) <= 0 || atoi(argv[2]) <= 0){
     errno = EINVAL;
-    perror("Invalid arguments! Please provide a positive, integer argument");
+    perror("Invalid arguments! Please provide a positive, integer buffer size and number of threads");
   }
 
   // Dynamically allocate bounded buffer of size specified by user through command line argument 1
@@ -74,7 +94,7 @@ int main(int argc, char **argv){
   sem_init(&args->num_filled, 0, 0); // Buffer begins with no items to consume
   
   // Create threads
-  const int NUM_THREADS = 10;
+  const int NUM_THREADS = (int) atoi(argv[2]);
   pthread_t tid[NUM_THREADS];
 
   for(int k = 0; k < NUM_THREADS; k++){
