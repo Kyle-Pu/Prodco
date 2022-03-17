@@ -18,7 +18,7 @@ struct params{
 
 };
   
-void produce(void *args){
+void* produce(void *args){
 
   struct params *buffArgs = (struct params *) args; // Cast args into pointer type
 
@@ -34,10 +34,12 @@ void produce(void *args){
 
   // Wake any waiting consumers
   sem_post(&buffArgs->num_filled);
+
+  return NULL;
   
 }
 
-void consume(void *args){
+void* consume(void *args){
 
   struct params *buffArgs = (struct params *) args; // Cast args into pointer type
 
@@ -54,6 +56,7 @@ void consume(void *args){
   sem_post(&buffArgs->num_open);
   
   printf("Read value is %d", val);
+  return NULL;
   
 }
 
