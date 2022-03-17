@@ -15,11 +15,9 @@ struct params{
   // Semaphores to track how many slots are open and how many are filled
   sem_t num_open;
   sem_t num_filled;
-
 };
   
 void* produce(void *args){
-
   struct params *buffArgs = (struct params *) args; // Cast args into pointer type
 
   // Ensure proper ordering
@@ -36,11 +34,9 @@ void* produce(void *args){
   sem_post(&buffArgs->num_filled);
 
   return NULL;
-  
 }
 
 void* consume(void *args){
-
   struct params *buffArgs = (struct params *) args; // Cast args into pointer type
 
   // Wait until there are items to consume
@@ -57,11 +53,9 @@ void* consume(void *args){
   
   printf("Read value is %d", val);
   return NULL;
-  
 }
 
 int main(int argc, char **argv){
-
   // Check inputs
   if(argc != 2 || atoi(argv[1]) <= 0){
     errno = EINVAL;
@@ -97,6 +91,6 @@ int main(int argc, char **argv){
   }
   
   // Free dynamically allocated memory
-  free(buff);
-  
+  free(buff);  
 }
+
