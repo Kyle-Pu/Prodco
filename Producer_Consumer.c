@@ -115,6 +115,10 @@ int main(int argc, char **argv){
   }
   
   // Free dynamically allocated memory
-  free(buff);  
+  free(buff);
+  free(args);
+
+  // Successfull return
+  return 0;
 }
 
