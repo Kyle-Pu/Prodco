@@ -1,15 +1,16 @@
 # Producer Consumer
 
-A solution to the producer-consumer (bounded buffer) problem using semaphores in C.
+A solution to the producer-consumer (bounded buffer) problem in C. Logs all actions and buffer status on each action (producing or consuming).
 
 ## Building
 
-Clone this repository and run `make` in the repo's directory.
+Clone this repository and run `make` in the repo's directory. Note that the semaphores used here are deprecated on OS X.
 
-## Plans
+## Running
 
-1) Random simulation and visualization at first
-2) Let user choose when to produce and when to consume, as well as how many items to produce/consume.
+`./ProducerConsumer BUFFER_SIZE NUM_PRODUCERS NUM_CONSUMERS`
+
+- e.g. `./ProducerConsumer 10 15 8` creates a buffer of size limit 10 with 15 producer threads and 8 consumer threads
 
 ## Resources and References
 
