@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <semaphore.h>
+#include <time.h>
 
 struct params{
   int *buffer;
@@ -22,7 +23,7 @@ void printBuff(struct params *buffArgs){
   for(int k = 0; k < buffArgs->maxSize - 1; k++){
     printf("%d, ", buffArgs->buffer[k]);
   }
-  printf("%d]", buffArgs->buffer[buffArgs->maxSize-1]); // Print last element
+  printf("%d]", buffArgs->buffer[buffArgs->maxSize-1]); // Print last element separately
   printf("\n");  
 }
 
@@ -77,9 +78,10 @@ void* consume(void *args){
 
 int main(int argc, char **argv){
   // Check inputs
-  if(argc != 3 || atoi(argv[1]) <= 0 || atoi(argv[2]) <= 0){
+  if(argc != 4 || atoi(argv[1]) <= 0 || atoi(argv[2]) <= 0 || atoi(argv[3]) <= 0 || (atoi(argv[3]) > atoi(argv[2]))){
     errno = EINVAL;
-    perror("Invalid arguments! Please provide a positive, integer buffer size and number of threads");
+    perror("Invalid arguments! Please provide a positive, integer buffer size, number of producer threads, and number of consumer threads. The number of consumers must not exceed the number of producers.");
+    exit(errno);
   }
 
   // Dynamically allocate bounded buffer of size specified by user through command line argument 1
@@ -94,14 +96,16 @@ int main(int argc, char **argv){
   sem_init(&args->num_filled, 0, 0); // Buffer begins with no items to consume
   
   // Create threads
-  const int NUM_THREADS = (int) atoi(argv[2]);
+  const int NUM_PRODUCERS = (int) atoi(argv[2]);
+  const int NUM_CONSUMERS = (int) atoi(argv[3]);
+  const int NUM_THREADS = NUM_PRODUCERS + NUM_CONSUMERS;
   pthread_t tid[NUM_THREADS];
-
+  
   for(int k = 0; k < NUM_THREADS; k++){
-    if(k % 2 == 0){
-      pthread_create(tid+k, NULL, produce, args);
-    }else{
+    if(k < NUM_CONSUMERS){
       pthread_create(tid+k, NULL, consume, args);
+    }else{
+      pthread_create(tid+k, NULL, produce, args);
     }
   }
   
