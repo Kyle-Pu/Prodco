@@ -1,6 +1,6 @@
 # Producer Consumer
 
-A solution to the producer-consumer (bounded buffer) problem in C. Logs all actions and buffer status on each action (producing or consuming).
+An interactive, command-line producer-consumer (bounded buffer) simulation written in C. Logs all actions and buffer status on each action (producing or consuming).
 
 ## Building
 
