@@ -78,9 +78,12 @@ void* consume(void *args){
 
 int main(int argc, char **argv){
   // Check inputs
-  if(argc != 4 || atoi(argv[1]) <= 0 || atoi(argv[2]) <= 0 || atoi(argv[3]) <= 0 || (atoi(argv[3]) > atoi(argv[2]))){
+  // All inputs must be positive integers
+  // Number of consumers < number of producers
+  // Number of producers - number of consumers must be <= size of buffer
+  if(argc != 4 || atoi(argv[1]) <= 0 || atoi(argv[2]) <= 0 || atoi(argv[3]) <= 0 || (atoi(argv[3]) > atoi(argv[2])) || (atoi(argv[2])-atoi(argv[3])>atoi(argv[1]))){
     errno = EINVAL;
-    perror("Invalid arguments! Please provide a positive, integer buffer size, number of producer threads, and number of consumer threads. The number of consumers must not exceed the number of producers.");
+    perror("Invalid arguments! Please provide a positive, integer buffer size, number of producer threads, and number of consumer threads. The number of consumers must not exceed the number of producers. The number of producers minus the number of consumers must not exceed the size of the buffer.");
     exit(errno);
   }
 
@@ -118,7 +121,7 @@ int main(int argc, char **argv){
   free(buff);
   free(args);
 
-  // Successfull return
+  // Successful return
   return 0;
 }
 
